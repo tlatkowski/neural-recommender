@@ -21,9 +21,9 @@ class RecommenderExperiment:
 
 class MovieLens(RecommenderExperiment):
 
-    train_fn = 'datasets/ml-1m.train.rating'
-    test_fn = 'datasets/ml-1m.test.rating'
-    negative_fn = 'datasets/ml-1m.test.negative'
+    train_fn = 'datasets/movie_lens/train.rating'
+    test_fn = 'datasets/movie_lens/test.rating'
+    negative_fn = 'datasets/movie_lens/test.negative'
 
     def __init__(self):
         self.train_data = pd.read_csv(self.train_fn, sep='\t')
@@ -42,9 +42,9 @@ class MovieLens(RecommenderExperiment):
 
 class Pinterest(RecommenderExperiment):
 
-    train_fn = 'datasets/pinterest-20.train.rating'
-    test_fn = 'datasets/pinterest-20.test.rating'
-    negative_fn = 'datasets/pinterest-20.train.negative'
+    train_fn = 'datasets/pinterest/train.rating'
+    test_fn = 'datasets/pinterest/test.rating'
+    negative_fn = 'datasets/pinterest/pinterest-20.train.negative'
 
     def train(self):
         return self.train_data
