@@ -7,8 +7,8 @@ class MatrixFactorization:
 
         with tf.Graph().as_default() as graph:
 
-            self.users = tf.placeholder(dtype=tf.float32, shape=[None])
-            self.items = tf.placeholder(dtype=tf.float32, shape=[None])
+            self.users = tf.placeholder(dtype=tf.int32, shape=[None])
+            self.items = tf.placeholder(dtype=tf.int32, shape=[None])
 
             self.ratings = tf.placeholder(dtype=tf.float32, shape=[None])
 

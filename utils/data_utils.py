@@ -1,5 +1,6 @@
 from enum import Enum
 import pandas as pd
+import numpy as np
 
 
 class Experiments(Enum):
@@ -8,6 +9,8 @@ class Experiments(Enum):
 
 
 class RecommenderExperiment:
+
+    column_names = ['Users', 'Items', 'Ratings', 'Ids']
 
     def train(self):
         raise NotImplementedError
@@ -18,6 +21,12 @@ class RecommenderExperiment:
     def negative(self):
         raise NotImplementedError
 
+    def num_users(self):
+        return max(self.train()['Users'])
+
+    def num_items(self):
+        return max(self.train()['Items'])
+
 
 class MovieLens(RecommenderExperiment):
 
@@ -26,8 +35,8 @@ class MovieLens(RecommenderExperiment):
     negative_fn = 'datasets/movie_lens/test.negative'
 
     def __init__(self):
-        self.train_data = pd.read_csv(self.train_fn, sep='\t')
-        self.test_data = pd.read_csv(self.test_fn, sep='\t')
+        self.train_data = pd.read_csv(self.train_fn, sep='\t', names=self.column_names)
+        self.test_data = pd.read_csv(self.test_fn, sep='\t', names=self.column_names)
         self.negative_data = pd.read_csv(self.negative_fn, sep='\t')
 
     def train(self):
@@ -61,3 +70,22 @@ EXPERIMENTS = {
     Experiments.Pinterest.name: Pinterest()
 }
 
+
+def get_train_instances(train, num_negatives):
+    user_input, item_input, labels = [],[],[]
+    num_users = train.shape[0]
+    num_items = train.shape[1]
+    for (u, i) in train.keys():
+        # positive instance
+        user_input.append(u)
+        item_input.append(i)
+        labels.append(1)
+        # negative instances
+        for t in range(num_negatives):
+            j = np.random.randint(num_items)
+            while train.has_key((u, j)):
+                j = np.random.randint(num_items)
+            user_input.append(u)
+            item_input.append(j)
+            labels.append(0)
+    return user_input, item_input, labels
