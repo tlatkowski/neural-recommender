@@ -1,0 +1,2 @@
+*.negative filter=lfs diff=lfs merge=lfs -text
+*.rating filter=lfs diff=lfs merge=lfs -text
