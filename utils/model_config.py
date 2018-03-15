@@ -1,4 +1,5 @@
 from enum import Enum
+
 from models import attention_collaborative_filtering, matrix_factorization, neural_collaborative_filtering
 
 

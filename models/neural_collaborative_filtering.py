@@ -3,10 +3,8 @@ import tensorflow as tf
 
 class NeuralCollaborativeFiltering:
 
-    def __init__(self, num_users, num_items, user_embedding_size=50, item_embedding_size=50, layers_sizes=[200, 100]):
-
+    def __init__(self, num_users, num_items, user_embedding_size=50, item_embedding_size=50, learning_rate=0.001, layers_sizes=[200, 100]):
         with tf.Graph().as_default() as graph:
-
             self.users = tf.placeholder(dtype=tf.int32, shape=[None])
             self.items = tf.placeholder(dtype=tf.int32, shape=[None])
 
@@ -27,3 +25,7 @@ class NeuralCollaborativeFiltering:
                     output = tf.layers.dense(output, units=layers_sizes[i], activation=tf.nn.relu)
 
                 prediction = tf.layers.dense(output, units=1, activation=tf.nn.sigmoid)
+
+            with tf.name_scope('loss'):
+                self.loss = tf.losses.sigmoid_cross_entropy(self.ratings, prediction)
+                self.optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(self.loss)

@@ -1,6 +1,7 @@
 from enum import Enum
-import pandas as pd
+
 import numpy as np
+import pandas as pd
 
 
 class Experiments(Enum):
@@ -9,7 +10,6 @@ class Experiments(Enum):
 
 
 class RecommenderExperiment:
-
     column_names = ['Users', 'Items', 'Ratings', 'Ids']
 
     def train(self):
@@ -29,7 +29,6 @@ class RecommenderExperiment:
 
 
 class MovieLens(RecommenderExperiment):
-
     train_fn = 'datasets/movie_lens/train.rating'
     test_fn = 'datasets/movie_lens/test.rating'
     negative_fn = 'datasets/movie_lens/test.negative'
@@ -50,7 +49,6 @@ class MovieLens(RecommenderExperiment):
 
 
 class Pinterest(RecommenderExperiment):
-
     train_fn = 'datasets/pinterest/train.rating'
     test_fn = 'datasets/pinterest/test.rating'
     negative_fn = 'datasets/pinterest/pinterest-20.train.negative'
@@ -72,7 +70,7 @@ EXPERIMENTS = {
 
 
 def get_train_instances(train, num_negatives):
-    user_input, item_input, labels = [],[],[]
+    user_input, item_input, labels = [], [], []
     num_users = train.shape[0]
     num_items = train.shape[1]
     for (u, i) in train.keys():

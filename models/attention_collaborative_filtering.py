@@ -3,10 +3,9 @@ import tensorflow as tf
 
 class AttentionCollaborativeFiltering:
 
-    def __init__(self, num_users, num_items, user_embedding_size, item_embedding_size, layers_sizes=[200, 100]):
+    def __init__(self, num_users, num_items, user_embedding_size, item_embedding_size, learning_rate=0.001, layers_sizes=[200, 100]):
 
         with tf.Graph().as_default() as graph:
-
             self.users = tf.placeholder(dtype=tf.int32, shape=[None])
             self.items = tf.placeholder(dtype=tf.int32, shape=[None])
 
@@ -22,7 +21,8 @@ class AttentionCollaborativeFiltering:
             with tf.name_scope('factorization'):
                 users_self_attention, _ = multiplicative_attention(users_embedded, users_embedded, users_embedded)
                 items_self_attention, _ = multiplicative_attention(items_embedded, items_embedded, items_embedded)
-                users_items_attention, _ = multiplicative_attention(users_embedded, items_embedded, items_embedded) # TODO check correctness
+                users_items_attention, _ = multiplicative_attention(users_embedded, items_embedded,
+                                                                    items_embedded)  # TODO check correctness
                 users_items = tf.concat([users_self_attention, items_self_attention, users_items_attention], axis=0)
 
                 output = users_items
@@ -30,6 +30,10 @@ class AttentionCollaborativeFiltering:
                     output = tf.layers.dense(output, units=layers_sizes[i], activation=tf.nn.relu)
 
                 prediction = tf.layers.dense(output, units=1, activation=tf.nn.sigmoid)
+
+            with tf.name_scope('loss'):
+                self.loss = tf.losses.sigmoid_cross_entropy(self.ratings, prediction)
+                self.optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(self.loss)
 
 
 def multiplicative_attention(queries, keys, values, model_size=None):
@@ -43,6 +47,5 @@ def multiplicative_attention(queries, keys, values, model_size=None):
     return multiplicative_att, attentions_weights
 
 
-
 def additive_attention(query, keys, values):
-    pass
+    raise NotImplementedError
