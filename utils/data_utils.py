@@ -22,10 +22,10 @@ class RecommenderExperiment:
         raise NotImplementedError
 
     def num_users(self):
-        return max(self.train()['Users'])
+        return max(self.train()['Users']) + 1
 
     def num_items(self):
-        return max(self.train()['Items'])
+        return max(self.train()['Items']) + 1
 
 
 class MovieLens(RecommenderExperiment):
@@ -51,7 +51,7 @@ class MovieLens(RecommenderExperiment):
 class Pinterest(RecommenderExperiment):
     train_fn = 'datasets/pinterest/train.rating'
     test_fn = 'datasets/pinterest/test.rating'
-    negative_fn = 'datasets/pinterest/pinterest-20.train.negative'
+    negative_fn = 'datasets/pinterest/test.negative'
 
     def train(self):
         return self.train_data
@@ -69,21 +69,27 @@ EXPERIMENTS = {
 }
 
 
-def get_train_instances(train, num_negatives):
+def prepare_experiment(experiment, num_negatives=4):
+    dataset = EXPERIMENTS[experiment.name]
+    train_with_negatives = get_train_instances(dataset.train(), dataset.num_users(), dataset.num_items(), num_negatives)
+    return train_with_negatives
+
+
+def get_train_instances(train, num_users, num_items, num_negatives):
     user_input, item_input, labels = [], [], []
-    num_users = train.shape[0]
-    num_items = train.shape[1]
-    for (u, i) in train.keys():
+    users_items = train[['Users', 'Items']].as_matrix()
+    for user, item in users_items:
         # positive instance
-        user_input.append(u)
-        item_input.append(i)
+        user_input.append(user)
+        item_input.append(item)
         labels.append(1)
         # negative instances
+        user_positive_items = users_items[users_items[:, 0] == user, 1]
         for t in range(num_negatives):
             j = np.random.randint(num_items)
-            while train.has_key((u, j)):
+            while user_positive_items.__contains__(j):
                 j = np.random.randint(num_items)
-            user_input.append(u)
+            user_input.append(user)
             item_input.append(j)
             labels.append(0)
     return user_input, item_input, labels
