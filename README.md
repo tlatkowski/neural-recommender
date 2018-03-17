@@ -1,4 +1,4 @@
-![](https://img.shields.io/badge/status-under--dev-red.svg?style=plastic)
+![](https://img.shields.io/badge/status-under--dev-red.svg?style=plastic) ![](https://img.shields.io/badge/TensorFlow-1.5.0-blue.svg?style=plastic)
 
 # Neural recommender system implementation in Tensorflow [under-dev]
 
