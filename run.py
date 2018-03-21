@@ -27,24 +27,26 @@ def train(model, experiment_name, main_config):
     user_input, item_input, labels = prepare_experiment(experiment_name)
     log.info('Loaded {} experiment'.format(experiment))
 
-    num_epochs = main_config['TRAINING']['num_epochs']
-    batch_size = main_config['TRAINING']['batch_size']
+    num_epochs = int(main_config['TRAINING']['num_epochs'])
+    batch_size = int(main_config['TRAINING']['batch_size'])
 
     num_batches = len(labels) // batch_size
-
     with tf.Session() as session:
+        summary_writer = tf.summary.FileWriter('{}/{}/test/'.format('model', 'rec'), graph=session.graph)
         session.run(tf.global_variables_initializer())
 
+        global_step = 0
         for epoch in range(num_epochs):
             # shuffle data
 
             for batch in range(num_batches):
+                global_step += 1
                 user_batch = user_input[batch * batch_size: (batch + 1) * batch_size]
                 item_batch = item_input[batch * batch_size: (batch + 1) * batch_size]
                 labels_batch = labels[batch * batch_size: (batch + 1) * batch_size]
                 feed_dict = {model.users: user_batch, model.items: item_batch, model.ratings: labels_batch}
-                loss, opt = session.run([model.loss, model.optimizer], feed_dict=feed_dict)
-                print(loss)
+                loss, opt, summary_op = session.run([model.loss, model.optimizer, model.summary_op], feed_dict=feed_dict)
+                summary_writer.add_summary(summary_op, global_step)
 
 
 def main():

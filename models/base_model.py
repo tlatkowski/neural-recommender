@@ -23,5 +23,9 @@ class BaseRecommenderModel:
             self.loss = tf.losses.sigmoid_cross_entropy(self.ratings, self.prediction)
             self.optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(self.loss)
 
+        with tf.name_scope('metrics'):
+            tf.summary.scalar("loss", self.loss)
+            self.summary_op = tf.summary.merge_all()
+
     def model_implementation(self, users_embedded, items_embedded):
         raise NotImplementedError

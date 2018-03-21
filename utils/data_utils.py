@@ -75,7 +75,7 @@ EXPERIMENTS = {
 }
 
 
-def prepare_experiment(experiment: str, num_negatives=4):
+def prepare_experiment(experiment: str, num_negatives=2):
     dataset = EXPERIMENTS[experiment]
     train_with_negatives = get_train_instances(dataset.train(), dataset.num_items(), num_negatives)
     return train_with_negatives
