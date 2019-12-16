@@ -1,4 +1,4 @@
 pandas==0.22.0
 numpy==1.13.1
 tqdm==4.19.9
-tensorflow==1.12.2
+tensorflow==1.15.0
